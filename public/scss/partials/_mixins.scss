@@ -1,0 +1,38 @@
+@mixin google-font($font) {
+  $font: unquote($font);
+  @import url('https://fonts.googleapis.com/css?family=#{$font}');
+
+}
+@mixin header($color-bg: black, $color-text: white, $border-size: 2px, $height: 60px){
+  height: $height;
+  line-height: calc(#{$height} - #{$border-size});
+  width: 100%;
+  background-color: $color-bg;
+  border-bottom: $border-size solid darken($color-bg, 20%);
+  color: $color-text;
+  font-size: 2em;
+}
+
+@mixin footer($color-bg: black, $color-text: white, $border-size: 2px, $height: 60px){
+  width: 100%;
+  background-color: $color-bg;
+  border-top: $border-size solid darken($color-bg, 20%);
+  color: $primary-color-text;
+  font-size: 0.8em;
+  color: $color-text;
+}
+
+@mixin vertical-align-block {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+@mixin box($padding: 0px){
+  height: 500px;
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: inset -1px 0px 32px -7px rgba(120,120,120,1);
+  color: $primary-text-color;
+  padding: $padding;
+}
