@@ -1,10 +1,6 @@
 import _ from 'lodash';
 export default class $$ {
 
-  constructor() {
-
-  }
-
   //Static Utility Functions
   static buildDungeon(arr = [40,80], type='floor') {
     var build = [];
@@ -20,19 +16,33 @@ export default class $$ {
     return build;
   }
 
-  static placeRooms(grid) {
+  static placeRooms(grid, count = 0, rooms = []) {
     //Initialising Variables
-    var rows = grid.length;
-    var cols = (grid.length > 0) ? grid[0].length : 0;
+    //var rows = grid.length;
+    //var cols = (grid.length > 0) ? grid[0].length : 0;
+    var roomSize = [0,0];
 
-    var initialRoomSize = this.initialRoomSize([[8,10],[10,15]]);
+    if (count === 0) {
+      //Initial Room
+      roomSize = this.roomSize([[8,10],[10,15]]);
+    } else {
+      //Additional roomSize
+      roomSize = this.roomSize([[10,12],[12,16]]);
+    }
+
 
     //Possible starting positions: top-left, top-right, bottom-left, bottom-right: row-cols
+/*
     var startingPositions = [
       [_.random(1,3), _.random(1,3)],
       [_.random(1,3), _.random(cols-4,cols-2)],
       [_.random(rows-4,rows-2), _.random(1,3)],
       [_.random(rows-4,rows-2), _.random(cols-4, cols-2)]
+    ];
+*/
+
+    var startingPositions = [
+      [_.random(1,6), _.random(1,6)]
     ];
 
     //Randomly select a starting point
@@ -43,9 +53,20 @@ export default class $$ {
     var buildDirectionCol = (randomIndex === 0 || randomIndex === 2) ? 'positive' : 'negative';
     var buildDirectionRow = (randomIndex === 2 || randomIndex === 3) ? 'positive' : 'negative';
 
-      for (let i = 0; i < initialRoomSize[0]; i++) {
+    //Initalise Room Information: top-left, top-right, bottom-left, bottom-right
+    rooms[count] = {coords: []};
+
+    //Build Room Coordinates
+    rooms[count].coords.push(startingPosition); //top-left
+    rooms[count].coords.push([startingPosition[0],(roomSize[1] + startingPosition[1])-1]); //top-right
+    rooms[count].coords.push([(roomSize[0] + startingPosition[0])-1, startingPosition[1]]); //bottom-left
+    rooms[count].coords.push([(rooms[count].coords[2][0]),(rooms[count].coords[1][1])]); //bottom-right
+
+    console.log(rooms[count].coords);
+
+      for (let i = 0; i < roomSize[0]; i++) {
         //Iterate through rows
-        for (let j = 0; j < initialRoomSize[1]; j++) {
+        for (let j = 0; j < roomSize[1]; j++) {
           //Iterate through cells for current row
             let row = 0;
             let col = 0;
@@ -60,6 +81,7 @@ export default class $$ {
               col = (startingPosition[1])-j;
             }
 
+            //[{row: [54,57], cols: [22,23,24,25]}]
             grid[row][col].type = 'room';
 
         }
@@ -68,10 +90,14 @@ export default class $$ {
       return grid;
   }
 
-  static initialRoomSize(arr = [[3,6],[6,9]]) {
+  static roomSize(arr = [[3,6],[6,9]]) {
     var a = _.random(arr[0][0], arr[0][1]);
     var b = _.random(arr[1][0], arr[1][1]);
     return [a,b];
+  }
+
+  static buildCorridor() {
+
   }
 
 }
