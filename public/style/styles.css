@@ -17,14 +17,11 @@ body {
 #root {
    background-color: #101010;
    border: 1px solid #F2F2F2;
-   width: 960px;
-   height: 600px;
 }
 
 #wrapper {
    display: flex;
    flex-direction: row;
-   width: 100%;
    height: 100%;
 }
 
@@ -66,14 +63,23 @@ body {
    font-family: 'VT323', monospace;
 }
 
-#wrapper .map .row {
+#wrapper .map .grid-row {
    display: flex;
    flex-direction: row;
 }
 
-#wrapper .map .row .cell {
-   width: 24px;
-   height: 24px;
+#wrapper .map .grid-row .grid-cell {
+   width: 12px;
+   height: 12px;
+   border: 1px solid #FFF;
+}
+
+#wrapper .map .grid-row .grid-cell.floor {
+   background-color: green;
+}
+
+#wrapper .map .grid-row .grid-cell.room {
+   background-color: red;
 }
 
 #wrapper .sidebar {

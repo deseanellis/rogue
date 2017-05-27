@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
+import DungeonReducer from './reducer_dungeon';
 
 const rootReducer = combineReducers({
-  state: (state = {}) => state
+  dungeon: DungeonReducer
 });
 
 export default rootReducer;

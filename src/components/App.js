@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import Dungeon from './Dungeon';
 
 class App extends Component {
+
   render() {
     return (
-      <div>Roguelike Dungeon Crawler</div>
+      <div id="wrapper">
+          <Dungeon />
+      </div>
     );
   }
 }
