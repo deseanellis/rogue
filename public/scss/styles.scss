@@ -70,29 +70,29 @@ body {
         width: 12px;
         height: 12px;
         border: 1px solid #FFF;
+        &.background {
+          background-color: $floor;
+          border-color: $floor-border;
+        }
         &.floor {
-          background-color: green;
+          background-color: $room;
+          border-color: $room-border;
         }
-        &.room {
+        &.door {
+          background-color: darken($room, 30%);
+          border-color: darken($room-border, 15%);
+        }
+        &.player {
+          background-color: $player;
+          border-color: lighten($player, 20%);
+        }
+        &.enemy {
           background-color: red;
+          border-color: lighten(red, 20%);
         }
-        .wall {
-
-        }
-        .corridor {
-
-        }
-        .corner-top-left {
-
-        }
-        .corner-top-right {
-
-        }
-        .corder-bottom-left {
-
-        }
-        .corner-bottom-right {
-
+        &.health {
+          background-color: green;
+          border-color: lighten(green, 20%);
         }
       }
     }

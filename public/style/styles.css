@@ -74,12 +74,34 @@ body {
    border: 1px solid #FFF;
 }
 
-#wrapper .map .grid-row .grid-cell.floor {
-   background-color: green;
+#wrapper .map .grid-row .grid-cell.background {
+   background-color: #1F1A14;
+   border-color: #0F0E0C;
 }
 
-#wrapper .map .grid-row .grid-cell.room {
+#wrapper .map .grid-row .grid-cell.floor {
+   background-color: #B0A593;
+   border-color: #757165;
+}
+
+#wrapper .map .grid-row .grid-cell.door {
+   background-color: #625848;
+   border-color: #4c4942;
+}
+
+#wrapper .map .grid-row .grid-cell.player {
+   background-color: #33D5E4;
+   border-color: #8de8f0;
+}
+
+#wrapper .map .grid-row .grid-cell.enemy {
    background-color: red;
+   border-color: #ff6666;
+}
+
+#wrapper .map .grid-row .grid-cell.health {
+   background-color: green;
+   border-color: #00e600;
 }
 
 #wrapper .sidebar {
