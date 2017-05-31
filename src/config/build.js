@@ -2,24 +2,25 @@ import _ from 'lodash';
 
 export const field = {
   ENEMY_RANGE: [3,5],
-  HEALTH_RANGE: [1,2],
+  HEALTH_RANGE: [1,3],
+  SHIELD_RANGE: [1,3],
   LADDER: 1,
   WEAPONS: {
     1: {
       name: 'Boxing Gloves',
-      damage: 0.8,
+      damage: 3,
     },
     2: {
       name: 'Sai',
-      damage: 1.2,
+      damage: 6,
     },
     3: {
       name: 'Mace',
-      damage: 1.8,
+      damage: 8,
     },
     4: {
       name: 'Sword of Annihitation',
-      damage: 2.5,
+      damage: 12,
     }
   }
 };

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { BuildDungeon, MovePlayer } from '../actions';
+import { BuildDungeon, MovePlayer, ViewEnemy } from '../actions';
 
 class Dungeon extends Component {
 
@@ -10,6 +10,16 @@ class Dungeon extends Component {
     super();
 
     this.handlerKeyPress = this.handlerKeyPress.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.gameOver) {
+      this.props.BuildDungeon();
+    }
+
+    if (this.props.floor !== prevProps.floor) {
+      this.props.BuildDungeon(this.props.floor);
+    }
   }
 
   componentDidMount() {
@@ -25,6 +35,13 @@ class Dungeon extends Component {
     this.props.MovePlayer(e.key);
   }
 
+  onCellClick(cell) {
+    let regex = new RegExp("enemy");
+    if (regex.test(cell.type)) {
+      this.props.ViewEnemy(cell.id);
+    }
+  }
+
   render() {
     let { dungeon } = this.props;
     return(
@@ -34,7 +51,12 @@ class Dungeon extends Component {
             <div key={i} className="grid-row">
               {row.map((cell, j) => {
                 return (
-                  <div key={j} style={{opacity: cell.opacity}} className={`grid-cell ${cell.type}`}></div>
+                  <div
+                    key={j}
+                    style={{opacity: cell.opacity}}
+                    className={`grid-cell ${cell.type}`}
+                    onClick={() => this.onCellClick(cell)}
+                  ></div>
                 )
               })}
             </div>
@@ -47,8 +69,10 @@ class Dungeon extends Component {
 
 function mapStateToProps(state) {
   return {
-    dungeon: state.dungeon.grid
+    dungeon: state.dungeon.grid,
+    gameOver: state.dungeon.gameOver,
+    floor: state.dungeon.floor
   }
 }
 
-export default connect(mapStateToProps, { BuildDungeon, MovePlayer })(Dungeon);
+export default connect(mapStateToProps, { BuildDungeon, MovePlayer, ViewEnemy })(Dungeon);
