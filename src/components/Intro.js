@@ -41,6 +41,7 @@ class Intro extends Component {
     let newPos = 0;
     let sfx = document.getElementById('sfx');
     var src = `${DIR}audio/sfx/select.wav`;
+    console.log(src);
 
     //Set Audio Source
     sfx.setAttribute("src", src);
