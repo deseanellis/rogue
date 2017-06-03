@@ -75,7 +75,7 @@ class Intro extends Component {
   render(){
     return(
       <div className="title-screen">
-        <img className="logo" src="images/Block-Dungeon.png" alt="logo" />
+        <img className="logo" src="./images/Block-Dungeon.png" alt="logo" />
         <div className="intro">
           <div className="options">
             <div

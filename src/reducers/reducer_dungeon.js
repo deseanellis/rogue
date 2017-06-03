@@ -5,6 +5,7 @@ import { field } from '../config/build';
 import $$ from '../functions';
 
 import { BUILD_DUNGEON, MOVE_PLAYER, VIEW_ENEMY, APPLY_CHEAT_CODE } from '../actions';
+import { DIR } from './reducer_music';
 
 const INITIAL_STATE = {
   grid: [],
@@ -30,8 +31,6 @@ const INITIAL_STATE = {
     nextLevelExp: 100
    }
 };
-
-var sfx = new Audio();
 
 const DungeonReducer = (state=INITIAL_STATE, action) => {
   switch (action.type) {
@@ -82,31 +81,24 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
         let gameOver = false;
         let enemies = _.clone(state.enemies);
         let hero = _.clone(state.hero);
-
-        enemies[movedState.enemy].health -= (damageDealt(hero, enemies[movedState.enemy]));
-        hero.health -= (damageDealt(enemies[movedState.enemy], hero));
         let selectedEnemy = enemies[movedState.enemy];
 
+        selectedEnemy.health -= (damageDealt(hero, selectedEnemy));
+        hero.health -= (damageDealt(selectedEnemy, hero));
+
+
         //Play Audio for Attack
-        sfx.setAttribute("src", 'audio/sfx/attack.wav');
-        //Use timeout to stop React DOM Promise Error
-        setTimeout(function() {
-          sfx.play();
-        }, 0);
+        playSfx(DIR, 'attack.wav');
 
         //If Enemy Dies
-        if (enemies[movedState.enemy].health <= 0) {
-          let [row, col] = enemies[movedState.enemy].pos;
+        if (selectedEnemy.health <= 0) {
+          let [row, col] = selectedEnemy.pos;
 
           movedState.grid[row][col].type = movedState.grid[row][col].type.split(' ')[0];
-          selectedEnemy = {};
+          selectedEnemy = {}; //Empty Object is Death
 
           //Play Audio for Enemy Defeat
-          sfx.setAttribute("src", 'audio/sfx/beat-enemy.wav');
-          //Use timeout to stop React DOM Promise Error
-          setTimeout(function() {
-            sfx.play();
-          }, 0);
+          playSfx(DIR, 'beat-enemy.wav');
 
           //Apply EXP Points
           let currentEXP = hero.nextLevelExp;
@@ -120,11 +112,7 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
 
           if (growth > 0) {
             //Play Audio for Level Up
-            sfx.setAttribute("src", 'audio/sfx/level.wav');
-            //Use timeout to stop React DOM Promise Error
-            setTimeout(function() {
-              sfx.play();
-            }, 0);
+            playSfx(DIR, 'level.wav');
           }
 
           //Apply New Stats
@@ -168,11 +156,7 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
           result = 'win';
 
           //Play Audio for Beat Boss
-          sfx.setAttribute("src", 'audio/sfx/beat-boss.wav');
-          //Use timeout to stop React DOM Promise Error
-          setTimeout(function() {
-            sfx.play();
-          }, 0);
+          playSfx(DIR, 'beat-boss.wav');
         }
 
         return {...state, grid: movedState.grid, gameOver, result};
@@ -186,11 +170,7 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
         hero.health = ((hero.health + healthGain) > 100) ? 100 : hero.health + healthGain;
 
         //Play Audio for Item
-        sfx.setAttribute("src", 'audio/sfx/item.wav');
-        //Use timeout to stop React DOM Promise Error
-        setTimeout(function() {
-          sfx.play();
-        }, 0);
+        playSfx(DIR, 'item.wav');
 
         return {...state, grid: movedState.grid, hero, playerPosition: movedState.playerPosition};
       }
@@ -204,11 +184,7 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
         hero.weapon = weaponSelected.name;
 
         //Play Audio for Item
-        sfx.setAttribute("src", 'audio/sfx/item.wav');
-        //Use timeout to stop React DOM Promise Error
-        setTimeout(function() {
-          sfx.play();
-        }, 0);
+        playSfx(DIR, 'item.wav');
 
         //Remove Stats from last weapon
         hero.attack -= hero.weaponStats.damage;
@@ -238,11 +214,7 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
         hero.defense += shieldGain;
 
         //Play Audio for Item
-        sfx.setAttribute("src", 'audio/sfx/item.wav');
-        //Use timeout to stop React DOM Promise Error
-        setTimeout(function() {
-          sfx.play();
-        }, 0);
+        playSfx(DIR, 'item.wav');
 
         return {...state, grid: movedState.grid, hero, playerPosition: movedState.playerPosition};
       }
@@ -252,11 +224,7 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
         let floor = state.floor + 1;
 
         //Play Audio for Ladder
-        sfx.setAttribute("src", 'audio/sfx/ladder.wav');
-        //Use timeout to stop React DOM Promise Error
-        setTimeout(function() {
-          sfx.play();
-        }, 0);
+        playSfx(DIR, 'ladder.wav');
 
         return {...state, floor};
       }
@@ -279,7 +247,10 @@ function damageDealt(unit, rival) {
   //Check if critical hit
   let criticalChance = _.random(0, 100);
   attackPts = (criticalChance <= unit.criticalHitRatio) ? attackPts + (attackPts * unit.criticalHitPercent/100) : attackPts;
-  return Math.round(attackPts / rival.defense);
+
+  let guard = rival.defense;
+  guard /= 2;
+  return Math.round(attackPts / guard);
 
 }
 
@@ -299,6 +270,20 @@ function addLevels(level, currentEXP, gainedEXP){
     currentEXP -= gainedEXP;
     return {level, currentEXP};
   }
+}
+
+function playSfx(DIR, file) {
+  let sfx = document.getElementById('sfx');
+
+  let src = `${DIR}sfx/${file}`;
+
+  //Play Audio
+  sfx.setAttribute("src", src);
+
+  //Use timeout to stop React DOM Promise Error
+  setTimeout(function() {
+    sfx.play();
+  }, 0);
 }
 
 export default DungeonReducer;

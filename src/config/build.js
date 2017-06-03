@@ -3,7 +3,7 @@ import _ from 'lodash';
 export const field = {
   ENEMY_RANGE: [3,5],
   HEALTH_RANGE: [2,4],
-  SHIELD_RANGE: [2,4],
+  SHIELD_RANGE: [1,3],
   LADDER: 1,
   WEAPONS: {
     1: [
@@ -29,8 +29,8 @@ export const field = {
     2: [
       {
         name: 'Double Sai',
-        damage: 16,
-        guard: 12,
+        damage: 18,
+        guard: 10,
         ratio: 15
       },
       {
@@ -49,8 +49,8 @@ export const field = {
     3: [
       {
         name: 'Pistol',
-        damage: 24,
-        guard: 16,
+        damage: 26,
+        guard: 14,
         ratio: 25
       },
       {
@@ -61,37 +61,49 @@ export const field = {
       },
       {
         name: 'Scythe',
-        damage: 22,
-        guard: 18,
+        damage: 24,
+        guard: 16,
         ratio: 15
       }
     ],
     4: [
       {
         name: 'Great Sword and Armor of Annihitation',
-        damage: 35,
-        guard: 25,
+        damage: 30,
+        guard: 20,
         ratio: 25
       },
       {
         name: 'VUG Mk2 Assault Rifle',
-        damage: 42,
-        guard: 18,
+        damage: 34,
+        guard: 16,
         ratio: 25
       },
       {
         name: "Elder's Wand",
-        damage: 30,
-        guard: 30,
+        damage: 28,
+        guard: 22,
         ratio: 35
       }
     ],
     5: [
       {
-        name: "Thor's Hammer",
-        damage: 45,
-        guard: 35,
-        ratio: 40
+        name: "Mjolnir",
+        damage: 40,
+        guard: 25,
+        ratio: 30
+      },
+      {
+        name: "Infinity Guantlet",
+        damage: 35,
+        guard: 30,
+        ratio: 30
+      },
+      {
+        name: "Eye of Agamotto",
+        damage: 30,
+        guard: 45,
+        ratio: 10
       }
     ]
   }
