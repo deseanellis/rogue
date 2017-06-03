@@ -40,7 +40,7 @@ class Intro extends Component {
   handlerKeyPress(e) {
     let newPos = 0;
     let sfx = document.getElementById('sfx');
-    let src = `${DIR}audio/sfx/select.wav`;
+    var src = `${DIR}audio/sfx/select.wav`;
 
     //Set Audio Source
     sfx.setAttribute("src", src);
