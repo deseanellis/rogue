@@ -4,7 +4,7 @@ import { generateDungeon } from '../config/build';
 import { field } from '../config/build';
 import $$ from '../functions';
 
-import { BUILD_DUNGEON, MOVE_PLAYER, VIEW_ENEMY } from '../actions';
+import { BUILD_DUNGEON, MOVE_PLAYER, VIEW_ENEMY, APPLY_CHEAT_CODE } from '../actions';
 
 const INITIAL_STATE = {
   grid: [],
@@ -13,25 +13,30 @@ const INITIAL_STATE = {
   selectedEnemy: {},
   floor: 1,
   gameOver: false,
+  result: "",
   hero: {
     health: 100,
     weapon: null,
+    weaponStats: {
+      damage: 0,
+      guard: 0
+    },
     attack: 5,
     attackMax: 6,
     criticalHitRatio: 5,
     criticalHitPercent: 50,
-    defense: 1,
+    defense: 5,
     level: 1,
     nextLevelExp: 100
    }
 };
 
+var sfx = new Audio();
+
 const DungeonReducer = (state=INITIAL_STATE, action) => {
   switch (action.type) {
     case BUILD_DUNGEON:
-      let {selectedEnemy} = INITIAL_STATE;
-      let {floor} = INITIAL_STATE;
-      let {hero} = INITIAL_STATE;
+      let {selectedEnemy, floor, hero, gameOver, result} = INITIAL_STATE;
 
       //Initialisation of Dungeon
       let grid = generateDungeon();
@@ -45,9 +50,25 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
       if (action.payload !== undefined) {
         return {...state, grid: placeUnits.grid, playerPosition, enemies: placeUnits.enemies, selectedEnemy, floor: action.payload};
       } else {
-        return {...state, grid: placeUnits.grid, playerPosition, enemies: placeUnits.enemies, selectedEnemy, floor, hero, gameOver: false};
+        return {...state, grid: placeUnits.grid, playerPosition, enemies: placeUnits.enemies, selectedEnemy, floor, hero, gameOver, result};
       }
+    case APPLY_CHEAT_CODE:
+      let cheatHero = _.clone(INITIAL_STATE.hero);
+      switch (action.payload) {
+        case 'ONE-PUNCH':
+          cheatHero.attack = 1000000;
+          cheatHero.attackMax = 1000000;
+          cheatHero.defense = 1000000;
+          cheatHero.criticalHitRatio = 99;
+          cheatHero.criticalHitPercent = 100
+          break;
+        case 'ROCK-HARD-ABS':
+          cheatHero.defense = 100;
+          break;
+        default:
 
+      }
+      return {...state, hero: cheatHero}
 
     case MOVE_PLAYER:
       if (state.gameOver) {
@@ -66,12 +87,26 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
         hero.health -= (damageDealt(enemies[movedState.enemy], hero));
         let selectedEnemy = enemies[movedState.enemy];
 
+        //Play Audio for Attack
+        sfx.setAttribute("src", 'audio/sfx/attack.wav');
+        //Use timeout to stop React DOM Promise Error
+        setTimeout(function() {
+          sfx.play();
+        }, 0);
+
         //If Enemy Dies
         if (enemies[movedState.enemy].health <= 0) {
           let [row, col] = enemies[movedState.enemy].pos;
 
           movedState.grid[row][col].type = movedState.grid[row][col].type.split(' ')[0];
           selectedEnemy = {};
+
+          //Play Audio for Enemy Defeat
+          sfx.setAttribute("src", 'audio/sfx/beat-enemy.wav');
+          //Use timeout to stop React DOM Promise Error
+          setTimeout(function() {
+            sfx.play();
+          }, 0);
 
           //Apply EXP Points
           let currentEXP = hero.nextLevelExp;
@@ -82,6 +117,15 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
 
           //Check for Level Growth
           let growth = newExp.level - hero.level;
+
+          if (growth > 0) {
+            //Play Audio for Level Up
+            sfx.setAttribute("src", 'audio/sfx/level.wav');
+            //Use timeout to stop React DOM Promise Error
+            setTimeout(function() {
+              sfx.play();
+            }, 0);
+          }
 
           //Apply New Stats
           for (let i = 0; i < growth; i++) {
@@ -104,15 +148,49 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
           gameOver = true;
         }
 
-        return {...state, grid: movedState.grid, enemies, hero, selectedEnemy, gameOver};
+        return {...state, grid: movedState.grid, enemies, hero, selectedEnemy, gameOver, result: 'lose'};
+      }
+
+
+
+      //-----------------Handle Princess--------------//
+      if (movedState.hasOwnProperty('princess')) {
+        let enemies = _.clone(state.enemies);
+        let theBoss = enemies[0];
+        let result = "";
+
+        //Determine if boss is alive
+        if (theBoss.health > 0) {
+          //Is Alive
+        } else {
+          //Is Defeated
+          gameOver = true;
+          result = 'win';
+
+          //Play Audio for Beat Boss
+          sfx.setAttribute("src", 'audio/sfx/beat-boss.wav');
+          //Use timeout to stop React DOM Promise Error
+          setTimeout(function() {
+            sfx.play();
+          }, 0);
+        }
+
+        return {...state, grid: movedState.grid, gameOver, result};
       }
 
 
       //-----------------Handle Health---------------//
       if (movedState.hasOwnProperty('health')) {
         let hero = _.clone(state.hero);
+        let healthGain = _.random(20, 50);
+        hero.health = ((hero.health + healthGain) > 100) ? 100 : hero.health + healthGain;
 
-        hero.health = ((hero.health + 20) > 100) ? 100 : hero.health + 20;
+        //Play Audio for Item
+        sfx.setAttribute("src", 'audio/sfx/item.wav');
+        //Use timeout to stop React DOM Promise Error
+        setTimeout(function() {
+          sfx.play();
+        }, 0);
 
         return {...state, grid: movedState.grid, hero, playerPosition: movedState.playerPosition};
       }
@@ -122,9 +200,32 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
       //-----------------Handle Weapon---------------//
       if (movedState.hasOwnProperty('weapon')) {
         let hero = _.clone(state.hero);
-        hero.weapon = field.WEAPONS[state.floor].name;
-        hero.attack += field.WEAPONS[state.floor].damage;
-        hero.attackMax += field.WEAPONS[state.floor].damage;
+        let weaponSelected = field.WEAPONS[state.floor][_.random(field.WEAPONS[state.floor].length -1)];
+        hero.weapon = weaponSelected.name;
+
+        //Play Audio for Item
+        sfx.setAttribute("src", 'audio/sfx/item.wav');
+        //Use timeout to stop React DOM Promise Error
+        setTimeout(function() {
+          sfx.play();
+        }, 0);
+
+        //Remove Stats from last weapon
+        hero.attack -= hero.weaponStats.damage;
+        hero.attackMax -= hero.weaponStats.damage;
+        hero.defense -= hero.weaponStats.guard;
+
+        //Add Stats from New Weapon
+        hero.attack += weaponSelected.damage;
+        hero.attackMax += weaponSelected.damage;
+        hero.defense += weaponSelected.guard;
+
+        //Store Current Weapon Stats
+        hero.weaponStats.damage = weaponSelected.damage;
+        hero.weaponStats.guard = weaponSelected.guard;
+
+        //Adjust Critical Hit Ratio
+        hero.criticalHitRatio = weaponSelected.ratio;
 
         return {...state, grid: movedState.grid, hero, playerPosition: movedState.playerPosition};
       }
@@ -133,8 +234,15 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
       //-----------------Handle Shield---------------//
       if (movedState.hasOwnProperty('shield')) {
         let hero = _.clone(state.hero);
+        let shieldGain =_.random(1,4);
+        hero.defense += shieldGain;
 
-        hero.defense += 2;
+        //Play Audio for Item
+        sfx.setAttribute("src", 'audio/sfx/item.wav');
+        //Use timeout to stop React DOM Promise Error
+        setTimeout(function() {
+          sfx.play();
+        }, 0);
 
         return {...state, grid: movedState.grid, hero, playerPosition: movedState.playerPosition};
       }
@@ -142,7 +250,14 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
       //-----------------Handle Ladder---------------//
       if (movedState.hasOwnProperty('ladder')) {
         let floor = state.floor + 1;
-        console.log(floor);
+
+        //Play Audio for Ladder
+        sfx.setAttribute("src", 'audio/sfx/ladder.wav');
+        //Use timeout to stop React DOM Promise Error
+        setTimeout(function() {
+          sfx.play();
+        }, 0);
+
         return {...state, floor};
       }
 
@@ -164,7 +279,6 @@ function damageDealt(unit, rival) {
   //Check if critical hit
   let criticalChance = _.random(0, 100);
   attackPts = (criticalChance <= unit.criticalHitRatio) ? attackPts + (attackPts * unit.criticalHitPercent/100) : attackPts;
-
   return Math.round(attackPts / rival.defense);
 
 }

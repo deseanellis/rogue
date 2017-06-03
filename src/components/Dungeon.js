@@ -2,28 +2,43 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { BuildDungeon, MovePlayer, ViewEnemy } from '../actions';
+import { BuildDungeon, MovePlayer, ViewEnemy, ApplyCheatCode } from '../actions';
 
 class Dungeon extends Component {
 
   constructor() {
     super();
+    this.state = {
+      lights: {
+        backgroundColor: 'black',
+        borderColor: 'black'
+      }
+    };
 
     this.handlerKeyPress = this.handlerKeyPress.bind(this);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.gameOver) {
-      this.props.BuildDungeon();
-    }
 
     if (this.props.floor !== prevProps.floor) {
       this.props.BuildDungeon(this.props.floor);
+    }
+
+    if (this.props.lights !== prevProps.lights) {
+      let color = this.props.lights ? '' : 'black';
+      this.setState({
+        lights: {
+          backgroundColor: color,
+          borderColor: color
+        }
+      });
+
     }
   }
 
   componentDidMount() {
     this.props.BuildDungeon();
+    this.props.ApplyCheatCode(this.props.cheatCode);
     window.addEventListener('keydown', _.throttle(this.handlerKeyPress, 100));
   }
 
@@ -53,7 +68,7 @@ class Dungeon extends Component {
                 return (
                   <div
                     key={j}
-                    style={{opacity: cell.opacity}}
+                    style={cell.radius ? {} : this.state.lights}
                     className={`grid-cell ${cell.type}`}
                     onClick={() => this.onCellClick(cell)}
                   ></div>
@@ -70,9 +85,10 @@ class Dungeon extends Component {
 function mapStateToProps(state) {
   return {
     dungeon: state.dungeon.grid,
-    gameOver: state.dungeon.gameOver,
-    floor: state.dungeon.floor
+    floor: state.dungeon.floor,
+    lights: state.lights.on,
+    cheatCode: state.start.cheatCode
   }
 }
 
-export default connect(mapStateToProps, { BuildDungeon, MovePlayer, ViewEnemy })(Dungeon);
+export default connect(mapStateToProps, { BuildDungeon, MovePlayer, ViewEnemy, ApplyCheatCode })(Dungeon);

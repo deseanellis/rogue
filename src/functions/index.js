@@ -13,14 +13,37 @@ const ENEMY_NAMES = [
 
 class Enemy {
   constructor(dungeon, id, name, x, y) {
+    switch (dungeon) {
+      case 1:
+        this.multiplier = 1;
+        break;
+      case 2:
+        this.multiplier = 2;
+        break;
+      case 3:
+        this.multiplier = 4;
+        break;
+      case 4:
+        this.multiplier = 6;
+        break;
+      default:
+        this.multiplier = 1;
+    }
+
     this.id = id;
     this.pos = [x, y];
     this.name = name;
     this.health = 100;
-    this.attack = _.random((5 * dungeon),(10 * dungeon));
-    this.defense = 1 + (dungeon * _.random(1,3));
+    this.attack = _.random((8 * this.multiplier),(8 * this.multiplier)+4);
+    this.defense = dungeon + (this.multiplier * _.random(4,8));
     this.criticalHitRatio = 5 * dungeon;
     this.criticalHitPercent = 50;
+
+    if (name === 'THE BOSS') {
+      this.attack = _.random(65,70);
+      this.defense = _.random(65,70);
+    }
+
   }
 }
 
@@ -38,12 +61,61 @@ export default class $$ {
   }
 
   static placePlayer(grid, roomCells) {
-    let index = _.random(roomCells.length);
+    let index = _.random(roomCells.length -1);
     let [i, j] = roomCells[index];
 
     grid[i][j].type = `${grid[i][j].type} player`;
 
+    $$.playerRadius(grid, [i, j], true);
     return [i, j];
+  }
+
+  static playerRadius(grid, playerPosition, bool) {
+    var rows = grid.length;
+    var cols = grid[0].length;
+    let [x, y] = playerPosition;
+
+    let radiusCells = [
+      [x, y],
+      [x, y-1], [x, y-2], [x, y-3],
+      [x, y+1], [x, y+2], [x, y+3],
+
+      [x-1, y],
+      [x-1, y-1], [x-1, y-2], [x-1, y-3],
+      [x-1, y+1], [x-1, y+2], [x-1, y+3],
+
+      [x-2, y],
+      [x-2, y-1], [x-2, y-2],
+      [x-2, y+1], [x-2, y+2],
+
+      [x-3, y],
+      [x-3, y-1],
+      [x-3, y+1],
+
+      [x+1, y],
+      [x+1, y-1], [x+1, y-2], [x+1, y-3],
+      [x+1, y+1], [x+1, y+2], [x+1, y+3],
+
+      [x+2, y],
+      [x+2, y-1], [x+2, y-2],
+      [x+2, y+1], [x+2, y+2],
+
+
+      [x+3, y],
+      [x+3, y+1],
+      [x+3, y-1]
+
+    ];
+
+    radiusCells = radiusCells.filter((cell) => {
+      return (cell[0] < rows && cell[0] >= 0) && (cell[1] < cols && cell[1] >= 0);
+    });
+
+    for (let i = 0; i < radiusCells.length; i++) {
+      let [row, col] = radiusCells[i];
+      grid[row][col].radius = bool;
+    }
+
   }
 
   static placeUnits(grid, dungeon = 1) {
@@ -66,10 +138,15 @@ export default class $$ {
     [min, max] = field.ENEMY_RANGE; //min and max for amount of enemy units
     range = _.random(min, max);
 
+    if (dungeon === 5) {
+      //If on last dungeon then place one enemy: THE BOSS
+      range = 1;
+    }
+
     //Build Random Enemy Locations
     for (let i = 0; i < range; i++) {
       //Find a random location
-      index = _.random(roomCells.length);
+      index = _.random(roomCells.length -1);
 
       //Get coords for the selected cell
       let [x, y] = roomCells[index];
@@ -80,6 +157,12 @@ export default class $$ {
 
       //Give a random name and add necessary calculated properties
       let name = ENEMY_NAMES[_.random(0, ENEMY_NAMES.length - 1)];
+
+      if (dungeon === 5) {
+        //If on last dungeon then place one enemy: THE BOSS
+        name = 'THE BOSS';
+      }
+
       let enemy = new Enemy(dungeon, i, name, x, y);
       enemy.expPoints = (enemy.attack + enemy.defense) * 8;
       enemy.attackMax = enemy.attack + Math.round(enemy.attack * 0.20);
@@ -87,6 +170,29 @@ export default class $$ {
       //Add to enemies array
       enemies.push(enemy);
     }
+
+
+
+    //Using Grid, find room Cells
+    roomCells = this.findFloorCells(grid); //Use this to place Princess after
+
+
+    //--------------PRINCESS------------//
+
+
+      if (dungeon === 5) {
+        // Only add Princess if the player is on the last dungeon
+
+        //Find a random location
+        index = _.random(roomCells.length -1);
+
+        //Get coords for the selected cell
+        let [x, y] = roomCells[index];
+
+        //Place Princess
+        grid[x][y].type = `${grid[x][y].type} princess`;
+      }
+
 
 
 
@@ -102,7 +208,7 @@ export default class $$ {
     //Build Random Health Locations
     for (let i = 0; i < range; i++) {
       //Find a random location
-      index = _.random(roomCells.length);
+      index = _.random(roomCells.length -1);
 
       //Get coords for the selected cell
       let [x, y] = roomCells[index];
@@ -127,7 +233,7 @@ export default class $$ {
     //Build Random Shield Locations
     for (let i = 0; i < range; i++) {
       //Find a random location
-      index = _.random(roomCells.length);
+      index = _.random(roomCells.length -1);
 
       //Get coords for the selected cell
       let [x, y] = roomCells[index];
@@ -145,7 +251,7 @@ export default class $$ {
     //--------------WEAPON------------//
 
       //Find a random location
-      index = _.random(roomCells.length);
+      index = _.random(roomCells.length -1);
 
       //Get coords for the selected cell
       let [x, y] = roomCells[index];
@@ -164,13 +270,16 @@ export default class $$ {
     //Build Random Ladder Locations
     for (let i = 0; i < field.LADDER; i++) {
       //Find a random location
-      index = _.random(roomCells.length);
+      index = _.random(roomCells.length -1);
 
       //Get coords for the selected cell
       let [x, y] = roomCells[index];
 
-      //Make the cell a ladder cell
-      grid[x][y].type = `${grid[x][y].type} ladder`;
+      if (dungeon !== 5) {
+        // Only add a ladder if the player is not on the last dungeon
+        grid[x][y].type = `${grid[x][y].type} ladder`;
+      }
+
     }
 
       //=================== ALL UNITS PLACED ===================//
@@ -205,12 +314,14 @@ export default class $$ {
       return {grid, playerPosition: currentPosition};
     } else {
       let enemyRegex = new RegExp('enemy');
+      let princessRegex = new RegExp('princess');
       let healthRegex = new RegExp('health');
       let shieldRegex = new RegExp('shield');
       let weaponRegex = new RegExp('weapon');
       let ladderRegex = new RegExp('ladder');
 
       let isEnemy = enemyRegex.test(grid[row][col].type);
+      let isPrincess = princessRegex.test(grid[row][col].type);
       let isHealth = healthRegex.test(grid[row][col].type);
       let isShield = shieldRegex.test(grid[row][col].type);
       let isWeapon = weaponRegex.test(grid[row][col].type);
@@ -221,12 +332,26 @@ export default class $$ {
         return {grid, playerPosition: [row, col], enemy: grid[row][col].id};
       }
 
+      if (isPrincess) {
+        return {grid, playerPosition: [row, col], princess: isPrincess};
+      }
+
+      if (isLadder) {
+        return {grid, playerPosition: [row, col], ladder: isLadder};
+      }
+
       //Remove Player from current position
       grid[currentPosition[0]][currentPosition[1]].type = grid[currentPosition[0]][currentPosition[1]].type.split(' ')[0];
+
+      //Clear Radius
+      $$.playerRadius(grid, [currentPosition[0], currentPosition[1]], false);
 
       //Clear health class and add player class
       grid[row][col].type = grid[row][col].type.split(' ')[0];
       grid[row][col].type = `${grid[row][col].type} player`;
+
+      //Add New Radius
+      $$.playerRadius(grid, [row, col], true);
 
       if (isHealth) {
 
@@ -243,10 +368,7 @@ export default class $$ {
         return {grid, playerPosition: [row, col], weapon: isWeapon};
       }
 
-      if (isLadder) {
 
-        return {grid, playerPosition: [row, col], ladder: isLadder};
-      }
 
       return {grid, playerPosition: [row, col]};
     }

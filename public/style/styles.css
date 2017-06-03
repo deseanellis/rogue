@@ -1,4 +1,11 @@
-@import url("https://fonts.googleapis.com/css?family=VT323");
+@import url("https://fonts.googleapis.com/css?family=VT323|Audiowide");
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+   outline: none;
+}
+
 html {
    height: 100%;
 }
@@ -13,6 +20,11 @@ body {
    margin-top: 40px;
 }
 
+.footer {
+   padding: 15px;
+   font-family: 'Audiowide', cursive;
+}
+
 #root {
    background-color: #101010;
    border: 1px solid #F2F2F2;
@@ -24,66 +36,202 @@ body {
    height: 100%;
 }
 
-#wrapper .intro {
+#wrapper .title-screen {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+}
+
+#wrapper .title-screen .logo {
+   height: 80px;
+   width: 332px;
+   margin-top: 30px;
+}
+
+#wrapper .title-screen .intro {
    flex-grow: 1;
-   height: 100%;
+   width: 960px;
+   min-height: 300px;
    font-family: 'VT323', monospace;
    font-size: 2.5rem;
    display: flex;
-   flex-direction: column;
+   flex-direction: row;
    justify-content: center;
    align-items: center;
 }
 
-#wrapper .intro .logo {
-   margin-top: 120px;
-}
-
-#wrapper .intro .logo img {
-   height: 150px;
-   width: 300px;
-}
-
-#wrapper .intro .options {
+#wrapper .title-screen .intro .options {
    flex-grow: 1;
+   min-width: 300px;
 }
 
-#wrapper .intro .options .option-item {
+#wrapper .title-screen .intro .options .option-item {
    text-align: center;
 }
 
-#wrapper .intro .footer {
+#wrapper .title-screen .intro .options .option-item input.cheat-codes {
+   margin-top: 20px;
+   background-color: transparent;
+   border: none;
+   border-bottom: 1px solid #F2F2F2;
+   text-align: center;
+   color: green;
+   text-transform: uppercase;
+}
+
+#wrapper .title-screen .intro .options .option-item .help-block {
+   font-size: 2rem;
    text-align: center;
 }
 
-#wrapper .HUD {
+#wrapper .title-screen .intro .help {
+   background-color: #292929;
+   display: flex;
+   flex-direction: column;
+   text-align: center;
+   min-height: 300px;
+   font-size: 2rem;
+}
+
+#wrapper .title-screen .intro .help .game-controls ul {
+   list-style: none;
+}
+
+#wrapper .title-screen .intro .help .legend .title {
+   background-color: #101010;
+   border-bottom: 2px solid #434343;
+   text-transform: uppercase;
+}
+
+#wrapper .title-screen .intro .help .legend .units {
+   display: flex;
+   flex-direction: column;
+}
+
+#wrapper .title-screen .intro .help .legend .units .unit-row {
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+}
+
+#wrapper .title-screen .intro .help .legend .units .unit-row div:first-child {
+   width: 12px;
+   height: 12px;
+   margin-right: 10px;
+   margin-left: 10px;
+   border-width: 1px;
+   border-style: solid;
+}
+
+#wrapper .title-screen .intro .help .legend .units .unit-row div:last-child {
+   text-align: left;
+}
+
+#wrapper .title-screen .intro .help .legend .units .unit-row .player {
+   background-color: #33D5E4;
+   border-color: #8de8f0;
+}
+
+#wrapper .title-screen .intro .help .legend .units .unit-row .enemy {
+   background-color: red;
+   border-color: #ff6666;
+}
+
+#wrapper .title-screen .intro .help .legend .units .unit-row .health {
+   background-color: green;
+   border-color: #00e600;
+}
+
+#wrapper .title-screen .intro .help .legend .units .unit-row .weapon {
+   background-color: gold;
+   border-color: #ffe766;
+}
+
+#wrapper .title-screen .intro .help .legend .units .unit-row .shield {
+   background-color: silver;
+   border-color: #f3f3f3;
+}
+
+#wrapper .title-screen .intro .help .legend .units .unit-row .ladder {
+   background-color: #1c1c1c;
+   border-color: #000;
+}
+
+#wrapper .title-screen .intro .help .legend .units .unit-row .princess {
+   background-color: deeppink;
+   border-color: #ff7ac2;
+}
+
+#wrapper .HUD .HUD-stats {
    width: 100%;
    display: flex;
    flex-direction: row;
    justify-content: space-around;
 }
 
-#wrapper .HUD .player-info, #wrapper .HUD .dungeon-info {
+#wrapper .HUD .HUD-stats .player-info, #wrapper .HUD .HUD-stats .dungeon-info {
+   font-family: 'Audiowide', cursive;
    margin-top: 10px;
    margin-bottom: 10px;
    width: 45%;
    min-height: 100px;
-   border: 1px solid #FFF;
-   border-radius: 5px;
+   border: 2px solid #bfbfbf;
+   background-color: #F1F1E0;
+   border-radius: 4px;
    display: flex;
    flex-direction: column;
    justify-content: flex-start;
+   color: #151510;
 }
 
-#wrapper .HUD .player-info .stats, #wrapper .HUD .dungeon-info .stats {
+#wrapper .HUD .HUD-stats .player-info .stats, #wrapper .HUD .HUD-stats .dungeon-info .stats {
    height: 15%;
    width: 100%;
 }
 
-#wrapper .HUD .player-info .stats.progress, #wrapper .HUD .dungeon-info .stats.progress {
-   margin-bottom: 0px;
+#wrapper .HUD .HUD-stats .player-info .stats.progress, #wrapper .HUD .HUD-stats .dungeon-info .stats.progress {
+   margin-bottom: 4px;
    height: 20px;
    background-color: #292929;
+   border-radius: 0px;
+   border-bottom: 2px solid #d1d19a;
+}
+
+#wrapper .HUD .HUD-stats .player-info .stats span:nth-child(2), #wrapper .HUD .HUD-stats .dungeon-info .stats span:nth-child(2) {
+   font-weight: bold;
+   color: #b40e02;
+}
+
+#wrapper .HUD .HUD-stats .player-info .stats:not(:first-child), #wrapper .HUD .HUD-stats .dungeon-info .stats:not(:first-child) {
+   padding: 2px 0px 2px 30px;
+}
+
+#wrapper .HUD .game-over {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   font-family: 'VT323', monospace;
+   font-size: 2rem;
+   margin-bottom: 10px;
+}
+
+#wrapper .HUD .game-over img {
+   height: 80px;
+}
+
+#wrapper .HUD .game-over .restart-options {
+   text-align: center;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+#wrapper .HUD .game-over .restart-options button {
+   border: none;
+   border: 1px solid green;
+   padding: 5px;
+   color: #151510;
 }
 
 #wrapper .map {
@@ -149,6 +297,44 @@ body {
 
 #wrapper .map .grid-row .grid-cell.ladder {
    background-color: #292929;
+}
+
+#wrapper .map .grid-row .grid-cell.princess {
+   background-color: deeppink;
+   border-color: #ff7ac2;
+}
+
+#wrapper .hints {
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   justify-content: space-around;
+   height: 40px;
+   font-family: 'VT323', monospace;
+   font-size: 1.5rem;
+}
+
+#wrapper .hints .messages, #wrapper .hints .controls {
+   padding: 5px 0px 5px 0px;
+}
+
+#wrapper .hints .messages {
+   background-color: black;
+   border: 2px solid #1c1c1c;
+   width: 85%;
+}
+
+#wrapper .hints .controls {
+   width: 5%;
+}
+
+#wrapper .hints .controls .btn-gold {
+   background-color: #CF991F;
+   color: #F2F2F2;
+}
+
+#wrapper .hints .messages, #wrapper .hints .controls {
+   text-align: center;
 }
 
 #wrapper .sidebar {

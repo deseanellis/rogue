@@ -3,6 +3,16 @@
   @import url('https://fonts.googleapis.com/css?family=#{$font}');
 
 }
+
+@mixin disable-input-outline {
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus {
+      outline: none;
+  }
+}
+
 @mixin header($color-bg: black, $color-text: white, $border-size: 2px, $height: 60px){
   height: $height;
   line-height: calc(#{$height} - #{$border-size});

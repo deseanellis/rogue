@@ -2,26 +2,98 @@ import _ from 'lodash';
 
 export const field = {
   ENEMY_RANGE: [3,5],
-  HEALTH_RANGE: [1,3],
-  SHIELD_RANGE: [1,3],
+  HEALTH_RANGE: [2,4],
+  SHIELD_RANGE: [2,4],
   LADDER: 1,
   WEAPONS: {
-    1: {
-      name: 'Boxing Gloves',
-      damage: 3,
-    },
-    2: {
-      name: 'Sai',
-      damage: 6,
-    },
-    3: {
-      name: 'Mace',
-      damage: 8,
-    },
-    4: {
-      name: 'Sword of Annihitation',
-      damage: 12,
-    }
+    1: [
+      {
+        name: 'Boxing Gloves',
+        damage: 4,
+        guard: 5,
+        ratio: 10
+      },
+      {
+        name: 'Brass Knuckles',
+        damage: 6,
+        guard: 3,
+        ratio: 8
+      },
+      {
+        name: 'Small Knife',
+        damage: 8,
+        guard: 1,
+        ratio: 10
+      }
+    ],
+    2: [
+      {
+        name: 'Double Sai',
+        damage: 16,
+        guard: 12,
+        ratio: 15
+      },
+      {
+        name: 'Long Sword and Shield',
+        damage: 20,
+        guard: 8,
+        ratio: 15
+      },
+      {
+        name: 'Bastard Sword',
+        damage: 22,
+        guard: 6,
+        ratio: 20
+      }
+    ],
+    3: [
+      {
+        name: 'Pistol',
+        damage: 24,
+        guard: 16,
+        ratio: 25
+      },
+      {
+        name: 'Battle Axe',
+        damage: 28,
+        guard: 12,
+        ratio: 25
+      },
+      {
+        name: 'Scythe',
+        damage: 22,
+        guard: 18,
+        ratio: 15
+      }
+    ],
+    4: [
+      {
+        name: 'Great Sword and Armor of Annihitation',
+        damage: 35,
+        guard: 25,
+        ratio: 25
+      },
+      {
+        name: 'VUG Mk2 Assault Rifle',
+        damage: 42,
+        guard: 18,
+        ratio: 25
+      },
+      {
+        name: "Elder's Wand",
+        damage: 30,
+        guard: 30,
+        ratio: 35
+      }
+    ],
+    5: [
+      {
+        name: "Thor's Hammer",
+        damage: 45,
+        guard: 35,
+        ratio: 40
+      }
+    ]
   }
 };
 
@@ -40,7 +112,7 @@ export const generateDungeon = () => {
     //Begin by using rows, then change type for each cell in the current row
     for (let i = y; i < y + height; i++) {
       for (let j = x; j < x + width; j++) {
-        grid[i][j] = {type};
+        grid[i][j] = {...grid[i][j], type};
       }
     }
     //Return altered grid
@@ -137,7 +209,7 @@ export const generateDungeon = () => {
   for (let i = 0; i < gridHeight; i++) {
     grid.push([]); //Empty array to store row-cells
     for (let j = 0; j < gridWidth; j++) {
-      grid[i].push({type: 'background'});
+      grid[i].push({type: 'background', radius: false});
     }
   }
 
