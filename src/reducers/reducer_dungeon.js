@@ -229,6 +229,8 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
         return {...state, floor};
       }
 
+      //Play Audio for Player Move
+      playSfx(DIR, 'move.wav');
 
       return {...state, grid: movedState.grid, playerPosition: movedState.playerPosition}
 
@@ -275,7 +277,7 @@ function addLevels(level, currentEXP, gainedEXP){
 function playSfx(DIR, file) {
   let sfx = document.getElementById('sfx');
 
-  let src = `${DIR}sfx/${file}`;
+  let src = `${DIR}audio/sfx/${file}`;
 
   //Play Audio
   sfx.setAttribute("src", src);
@@ -283,7 +285,7 @@ function playSfx(DIR, file) {
   //Use timeout to stop React DOM Promise Error
   setTimeout(function() {
     sfx.play();
-  }, 0);
+  }, 150);
 }
 
 export default DungeonReducer;

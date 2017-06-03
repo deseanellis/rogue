@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import { BuildDungeon, Lights } from '../actions';
 
+import { DIR } from '../reducers/reducer_music';
+
 class HUD extends Component {
 
   getHealth(unit) {
@@ -33,7 +35,7 @@ class HUD extends Component {
       <div className="HUD">
         {this.props.gameOver ? (
           <div className="game-over">
-            <img src={`images/${this.props.result ==='win' ? 'You-Win' : 'You-Lose'}.png`} alt="result"/>
+            <img src={`${DIR}images/${this.props.result ==='win' ? 'You-Win' : 'You-Lose'}.png`} alt="result"/>
             {
               this.props.result === 'win' ? (
                 <div className="restart-options">

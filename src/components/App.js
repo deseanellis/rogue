@@ -33,6 +33,7 @@ class App extends Component {
       audioEl.pause();
       //Use timeout to stop React DOM Promise Error
       setTimeout(function() {
+        audioEl.volume = 0.5;
         audioEl.play();
       }, 0);
 

@@ -4,6 +4,8 @@ import { GameStart } from '../actions';
 
 import Help from './subs/Help';
 
+import { DIR } from '../reducers/reducer_music';
+
 class Intro extends Component {
 
   constructor(props) {
@@ -37,7 +39,13 @@ class Intro extends Component {
 
   handlerKeyPress(e) {
     let newPos = 0;
-    let sfx = new Audio('audio/sfx/select.wav');
+    let sfx = document.getElementById('sfx');
+    let file = 'select.wav';
+    let src = `${DIR}audio/sfx/${file}`;
+
+    //Set Audio Source
+    sfx.setAttribute("src", src);
+
     switch (e.key) {
       case "ArrowUp":
           sfx.play();
@@ -75,7 +83,7 @@ class Intro extends Component {
   render(){
     return(
       <div className="title-screen">
-        <img className="logo" src="./images/Block-Dungeon.png" alt="logo" />
+        <img className="logo" src={`${DIR}images/Block-Dungeon.png`} alt="logo" />
         <div className="intro">
           <div className="options">
             <div
