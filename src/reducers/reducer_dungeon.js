@@ -230,7 +230,7 @@ const DungeonReducer = (state=INITIAL_STATE, action) => {
       }
 
       //Play Audio for Player Move
-      playSfx(DIR, 'move.wav');
+      playSfx(DIR, 'select.wav');
 
       return {...state, grid: movedState.grid, playerPosition: movedState.playerPosition}
 
@@ -285,7 +285,7 @@ function playSfx(DIR, file) {
   //Use timeout to stop React DOM Promise Error
   setTimeout(function() {
     sfx.play();
-  }, 150);
+  }, 500);
 }
 
 export default DungeonReducer;
