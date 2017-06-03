@@ -1,0 +1,297 @@
+@import 'partials/variables';
+@import 'partials/mixins';
+
+@include google-font('VT323|Audiowide');
+@include disable-input-outline;
+
+html {
+  height: 100%;
+}
+
+body {
+  font-size: 12px;
+  color: $text-white;
+  background-color: $dark-grey;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 40px;
+}
+
+.footer {
+  padding: 15px;
+  font-family: 'Audiowide', cursive;
+}
+
+#root {
+  background-color: darken($dark-grey, 10%);
+  border: 1px solid $border-white;
+}
+
+#wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  .title-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .logo {
+      height: 80px;
+      width: 332px;
+      margin-top: 30px;
+    }
+    .intro {
+      flex-grow: 1;
+      width: 960px;
+      min-height: 300px;
+      font-family: 'VT323', monospace;
+      font-size: 2.5rem;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      .options {
+        flex-grow: 1;
+        min-width: 300px;
+        .option-item {
+          text-align: center;
+          input.cheat-codes {
+            margin-top: 20px;
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid $text-white;
+            text-align: center;
+            color: green;
+            text-transform: uppercase;
+          }
+          .help-block {
+            font-size: 2rem;
+            text-align: center;
+          }
+        }
+      }
+      .help {
+        background-color: $dark-grey;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        min-height: 300px;
+        font-size: 2rem;
+        .game-controls {
+          ul {
+            list-style: none;
+          }
+        }
+        .legend {
+          .title {
+            background-color: darken($dark-grey, 10%);
+            border-bottom: 2px solid lighten($dark-grey, 10%);
+            text-transform: uppercase;
+          }
+          .units {
+            display: flex;
+            flex-direction: column;
+            .unit-row {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              div:first-child {
+                width: 12px;
+                height: 12px;
+                margin-right: 10px;
+                margin-left: 10px;
+                border-width: 1px;
+                border-style: solid;
+              }
+              div:last-child {
+                text-align: left;
+              }
+              .player {
+                background-color: $player;
+                border-color: lighten($player, 20%);
+              }
+              .enemy {
+                background-color: red;
+                border-color: lighten(red, 20%);
+              }
+              .health {
+                background-color: green;
+                border-color: lighten(green, 20%);
+              }
+              .weapon {
+                background-color: gold;
+                border-color: lighten(gold, 20%);
+              }
+              .shield {
+                background-color: silver;
+                border-color: lighten(silver, 20%);
+              }
+              .ladder {
+                background-color: darken($dark-grey, 5%);
+                border-color: #000;
+              }
+              .princess {
+                background-color: deeppink;
+                border-color: lighten(deeppink, 20%);
+              }
+            }
+          }
+        }
+
+      }
+    }
+  }
+  .HUD {
+    .HUD-stats {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      .player-info, .dungeon-info {
+        font-family: 'Audiowide', cursive;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        width: 45%;
+        min-height: 100px;
+        border: 2px solid darken($text-white, 20%);
+        background-color: $off-white;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        color: $text-black;
+        .stats {
+          height: 15%;
+          width: 100%;
+          &.progress {
+            margin-bottom: 4px;
+            height: 20px;
+            background-color: $dark-grey;
+            border-radius: 0px;
+            border-bottom: 2px solid darken($off-white, 20%);
+          }
+          span:nth-child(2) {
+            font-weight: bold;
+            color: #b40e02;
+          }
+        }
+        .stats:not(:first-child){
+          padding: 2px 0px 2px 30px;
+        }
+      }
+    }
+    .game-over {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'VT323', monospace;
+      font-size: 2rem;
+      margin-bottom: 10px;
+      img {
+        height: 80px;
+      }
+      .restart-options{
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        button {
+          border: none;
+          border: 1px solid green;
+          padding: 5px;
+          color: $text-black;
+        }
+      }
+    }
+  }
+  .map {
+    flex-grow: 1;
+    height: 100%;
+    font-family: 'VT323', monospace;
+    .grid-row {
+      display: flex;
+      flex-direction: row;
+      .grid-cell{
+        width: 12px;
+        height: 12px;
+        border: 1px solid #FFF;
+        &.background {
+          background-color: $floor;
+          border-color: $floor-border;
+        }
+        &.floor {
+          background-color: $room;
+          border-color: $room-border;
+        }
+        &.door {
+          background-color: darken($room, 30%);
+          border-color: darken($room-border, 15%);
+        }
+        &.player {
+          background-color: $player;
+          border-color: lighten($player, 20%);
+        }
+        &.enemy {
+          background-color: red;
+          border-color: lighten(red, 20%);
+          &:hover{
+            cursor: help;
+          }
+        }
+        &.health {
+          background-color: green;
+          border-color: lighten(green, 20%);
+        }
+        &.weapon {
+          background-color: gold;
+          border-color: lighten(gold, 20%);
+        }
+        &.shield {
+          background-color: silver;
+          border-color: lighten(silver, 20%);
+        }
+        &.ladder {
+          background-color: $dark-grey;
+        }
+        &.princess {
+          background-color: deeppink;
+          border-color: lighten(deeppink, 20%);
+        }
+      }
+    }
+  }
+  .hints{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    height: 40px;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    .messages, .controls {
+      padding: 5px 0px 5px 0px;
+    }
+    .messages {
+      background-color: darken($dark-grey, 20%);
+      border: 2px solid darken($dark-grey, 5%);
+      width: 85%;
+    }
+    .controls {
+      width: 5%;
+      .btn-gold {
+        background-color: $gold;
+        color: $text-white;
+      }
+    }
+    .messages, .controls {
+      text-align: center;
+    }
+  }
+  .sidebar{
+    width: 250px;
+    height: 100%;
+    background-color: $dark-grey;
+  }
+}
